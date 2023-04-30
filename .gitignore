@@ -1,6 +1,6 @@
 /yc-init
 .idea
-/test
+.home
 
 # Local .terraform directories
 /terraform/.terraform

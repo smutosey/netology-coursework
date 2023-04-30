@@ -1,0 +1,24 @@
+#cloud-config
+disable_root: true
+timezone: Asia/Novosibirsk
+repo_update: true
+repo_upgrade: true
+apt:
+  preserve_sources_list: true
+
+#packages:
+##  - epel-release
+#  - nginx
+#
+runcmd:
+  - [ chown -R ansible:www-data /var/www/html ]
+  - [ sh, -c, "echo '<html><p>Application Load Balancer\n</p></html>' > /var/www/html/index.html"]
+  - [ sh, -c, "echo $(hostname | cut -d '.' -f 1 ) >> /var/www/html/index.html" ]
+
+users:
+ - name: ansible
+   groups: sudo
+   shell: /bin/bash
+   sudo: ['ALL=(ALL) NOPASSWD:ALL']
+   ssh-authorized-keys:
+     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCknQuFLVEx1O6fNU5rWeHXflHLw9LI7tjoGj5jqhZi0cxuV8Yp6MRfHoreW3LlRPsC8vEk7Jco+WNOlt7gEXash7RDsvBNBSx54G4+NTkLNx5kiF5Sz2ThUELBJn++LnxVN6xnLbse2ntRoFls/2hCF3FLOI5TK2pkdybwPFIZkGlp3ecN/wqzZQN/WbUhHUldp7+3KPHXYOz1hmRcbf1cCZyyWNLGSilozpvyRNrjWtro4IlZ0gW2vmmnPk8mFai1aPe5pZVmzL4DIyd4hkGwAZcLHodMg9SC3yz6SGPmF+08o+JuCVVNYP732Ebu67wrnI2F9QEbo81QXWghkIGI7H6KIH66ylUqW2U0CivoVsIXT/URJC+dNQ4g1TVhxW/iogIVhRK2QrLhlNH1ahZAJauM9T5RvLlMjKVEyYf9GWSO9oXaN2ceDqIvrdg5X3vftFGcyS9sXqSJ1KtualdCt2UqWI2p0RAQNv/tUjjeQchR0oi6T52h44NtVD9wUGE= nedorezov@controller
