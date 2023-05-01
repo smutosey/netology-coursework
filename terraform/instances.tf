@@ -6,16 +6,18 @@ data "yandex_compute_image" "webserver" {
   family = "lemp"
 }
 
-resource "yandex_compute_instance" "cw-bastion" {
+resource "yandex_compute_instance" "bastion" {
   name        = "bastion"
   hostname    = "bastion"
-  zone        = var.app_instance_zone
+  zone        = "ru-central1-b"
+  folder_id           = var.yc_folder_id
+  service_account_id  = yandex_iam_service_account.dude.id
   description = "bastion"
   platform_id = "standard-v3"
 
   resources {
-    cores  = 4
-    memory = 4
+    cores  = 2
+    memory = 2
     core_fraction = 20
   }
 
@@ -27,17 +29,26 @@ resource "yandex_compute_instance" "cw-bastion" {
   }
 
   network_interface {
-    subnet_id          = yandex_vpc_subnet.public.id
+    subnet_id          = yandex_vpc_subnet.bastion.id
     nat                = true
+    ip_address         = "192.168.99.99"
     security_group_ids = [yandex_vpc_security_group.bastion.id]
   }
+
+#  network_interface {
+#    subnet_id          = yandex_vpc_subnet.internal-bastion.id
+#    ip_address         = "192.168.99.99"
+#    ipv6               = false
+#    security_group_ids = [yandex_vpc_security_group.internal-bastion.id]
+#  }
+
   metadata = {
     user-data = file("./meta/bastion.yaml")
   }
 }
 
-resource "yandex_compute_instance_group" "cw-netology" {
-  name                = "cw-netology"
+resource "yandex_compute_instance_group" "web-netology" {
+  name                = "web-netology"
   folder_id           = var.yc_folder_id
   service_account_id  = yandex_iam_service_account.dude.id
   deletion_protection = false
@@ -66,10 +77,10 @@ resource "yandex_compute_instance_group" "cw-netology" {
     }
 
     network_interface {
-      network_id = yandex_vpc_network.cw-network.id
-      subnet_ids = [yandex_vpc_subnet.private-a.id,yandex_vpc_subnet.private-b.id,yandex_vpc_subnet.private-c.id]
+      network_id = yandex_vpc_network.vpc.id
+      subnet_ids = [yandex_vpc_subnet.private-web-a.id,yandex_vpc_subnet.private-web-b.id,yandex_vpc_subnet.private-web-c.id]
       ipv6       = false
-      security_group_ids = [yandex_vpc_security_group.webservers-sg.id]
+      security_group_ids = [yandex_vpc_security_group.webservers.id]
     }
 
     metadata = {

@@ -19,9 +19,6 @@ variable "yc_folder_id" {
 #variable yc_public_key_path {
 #  description = "public key for ssh"
 #}
-#variable yc_image_id {
-#  description = "Disk image"
-#}
 
 variable app_instance_zone {
   description = "Zone for public servers"

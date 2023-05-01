@@ -12,7 +12,7 @@ resource "yandex_alb_backend_group" "cw-netology" {
     name             = "test-http-backend"
     weight           = 1
     port             = 80
-    target_group_ids = [yandex_compute_instance_group.cw-netology.application_load_balancer[0].target_group_id]
+    target_group_ids = [yandex_compute_instance_group.web-netology.application_load_balancer[0].target_group_id]
     # tls {
     #   sni = "backend-domain.internal"
     # }
@@ -48,22 +48,22 @@ resource "yandex_alb_virtual_host" "cw-netology" {
 resource "yandex_alb_load_balancer" "cw-netology" {
   name = "cw-netology"
 
-  network_id = yandex_vpc_network.cw-network.id
+  network_id = yandex_vpc_network.vpc.id
 
   allocation_policy {
     location {
       zone_id   = "ru-central1-a"
-      subnet_id = yandex_vpc_subnet.private-a.id
+      subnet_id = yandex_vpc_subnet.private-web-a.id
     }
 
     location {
       zone_id   = "ru-central1-b"
-      subnet_id = yandex_vpc_subnet.private-b.id
+      subnet_id = yandex_vpc_subnet.private-web-b.id
     }
 
     location {
       zone_id   = "ru-central1-c"
-      subnet_id = yandex_vpc_subnet.private-c.id
+      subnet_id = yandex_vpc_subnet.private-web-c.id
     }
   }
 

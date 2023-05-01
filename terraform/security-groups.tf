@@ -1,7 +1,7 @@
-resource "yandex_vpc_security_group" "webservers-sg" {
-  name        = "webserverssg"
+resource "yandex_vpc_security_group" "webservers" {
+  name        = "webservers"
   description = "Webservers security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
@@ -14,7 +14,7 @@ resource "yandex_vpc_security_group" "webservers-sg" {
   ingress {
     protocol       = "TCP"
     description    = "Rule for load balancer"
-    security_group_id = yandex_vpc_security_group.loadbalancer.id
+    security_group_id = yandex_vpc_security_group.load-balancer.id
     port           = 80
   }
 
@@ -28,14 +28,14 @@ resource "yandex_vpc_security_group" "webservers-sg" {
   ingress {
     protocol       = "TCP"
     description    = "Rule1 for metrics"
-    security_group_id = yandex_vpc_security_group.prometheus-sg.id
+    security_group_id = yandex_vpc_security_group.prometheus.id
     port           = 9100
   }
 
   ingress {
     protocol       = "TCP"
     description    = "Rule2 for metrics"
-    security_group_id = yandex_vpc_security_group.prometheus-sg.id
+    security_group_id = yandex_vpc_security_group.prometheus.id
     port           = 4040
   }
 
@@ -46,15 +46,15 @@ resource "yandex_vpc_security_group" "webservers-sg" {
   }
 }
 
-resource "yandex_vpc_security_group" "prometheus-sg" {
-  name        = "prometheussg"
+resource "yandex_vpc_security_group" "prometheus" {
+  name        = "prometheus"
   description = "Prometheus security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
     description    = "Rule for grafana"
-    security_group_id = yandex_vpc_security_group.grafana-sg.id
+    security_group_id = yandex_vpc_security_group.grafana.id
     port           = 9090
   }
 
@@ -72,22 +72,22 @@ resource "yandex_vpc_security_group" "prometheus-sg" {
   }
 }
 
-resource "yandex_vpc_security_group" "elasticsearch-sg" {
-  name        = "elasticsearchsg"
+resource "yandex_vpc_security_group" "elasticsearch" {
+  name        = "elasticsearch"
   description = "Elasticsearch security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
     description    = "Rule for kibana"
-    security_group_id = yandex_vpc_security_group.kibana-sg.id
+    security_group_id = yandex_vpc_security_group.kibana.id
     port           = 9200
   }
 
   ingress {
     protocol       = "TCP"
     description    = "Rule for webservers"
-    security_group_id = yandex_vpc_security_group.webservers-sg.id
+    security_group_id = yandex_vpc_security_group.webservers.id
     port           = 9200
   }
 
@@ -105,10 +105,10 @@ resource "yandex_vpc_security_group" "elasticsearch-sg" {
   }
 }
 
-resource "yandex_vpc_security_group" "grafana-sg" {
-  name        = "grafanasg"
+resource "yandex_vpc_security_group" "grafana" {
+  name        = "grafana"
   description = "Grafana security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
@@ -131,10 +131,10 @@ resource "yandex_vpc_security_group" "grafana-sg" {
   }
 }
 
-resource "yandex_vpc_security_group" "kibana-sg" {
-  name        = "kibanasg"
+resource "yandex_vpc_security_group" "kibana" {
+  name        = "kibana"
   description = "Kibana security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
@@ -157,10 +157,10 @@ resource "yandex_vpc_security_group" "kibana-sg" {
   }
 }
 
-resource "yandex_vpc_security_group" "loadbalancer" {
-  name        = "loadbalancer1sg"
+resource "yandex_vpc_security_group" "load-balancer" {
+  name        = "load-balancer"
   description = "Load balancer security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
@@ -193,13 +193,13 @@ resource "yandex_vpc_security_group" "loadbalancer" {
 }
 
 resource "yandex_vpc_security_group" "bastion" {
-  name        = "Bastionsg"
-  description = "Bastion security group"
-  network_id  = yandex_vpc_network.cw-network.id
+  name        = "external-bastion"
+  description = "external bastion security group"
+  network_id  = yandex_vpc_network.vpc.id
 
   ingress {
     protocol       = "TCP"
-    description    = "Rule for income"
+    description    = "allow SSH access from Internet"
     v4_cidr_blocks = ["0.0.0.0/0"]
     port           = 22
   }
@@ -209,4 +209,5 @@ resource "yandex_vpc_security_group" "bastion" {
     description    = "Rule out"
     v4_cidr_blocks = ["0.0.0.0/0"]
   }
-}  
+}
+
