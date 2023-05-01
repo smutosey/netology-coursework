@@ -25,6 +25,7 @@ resource "yandex_compute_instance" "bastion" {
     initialize_params {
       image_id = data.yandex_compute_image.base.id
       size     = 10
+      type     = "network-hdd"
     }
   }
 
@@ -71,8 +72,9 @@ resource "yandex_compute_instance_group" "web-netology" {
     boot_disk {
       mode = "READ_WRITE"
       initialize_params {
-        image_id = data.yandex_compute_image.base.id
+        image_id = data.yandex_compute_image.webserver.id
         size     = "20"
+        type     = "network-hdd"
       }
     }
 

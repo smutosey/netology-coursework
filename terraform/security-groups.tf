@@ -3,13 +3,15 @@ resource "yandex_vpc_security_group" "webservers" {
   description = "Webservers security group"
   network_id  = yandex_vpc_network.vpc.id
 
-#  ingress {
-#    protocol       = "TCP"
-#    description    = "Rule1 for healthchecks"
+  ingress {
+    protocol       = "TCP"
+    description    = "Rule1 for healthchecks"
 #    v4_cidr_blocks = ["0.0.0.0/0"]
+    v4_cidr_blocks = ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
 #    from_port      = 1
 #    to_port        = 32767
-#  }
+    port = 80
+  }
 
   ingress {
     protocol       = "TCP"
