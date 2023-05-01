@@ -5,7 +5,7 @@ resource "yandex_iam_service_account" "dude" {
 
 resource "yandex_resourcemanager_folder_iam_binding" "editor" {
   folder_id = var.yc_folder_id
-  role = "editor"
+  role      = "editor"
 
   members = [
     "serviceAccount:${yandex_iam_service_account.dude.id}",

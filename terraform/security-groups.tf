@@ -4,41 +4,41 @@ resource "yandex_vpc_security_group" "webservers" {
   network_id  = yandex_vpc_network.vpc.id
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule1 for healthchecks"
-#    v4_cidr_blocks = ["0.0.0.0/0"]
+    protocol    = "TCP"
+    description = "Rule1 for healthchecks"
+    #    v4_cidr_blocks = ["0.0.0.0/0"]
     v4_cidr_blocks = ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
-#    from_port      = 1
-#    to_port        = 32767
+    #    from_port      = 1
+    #    to_port        = 32767
     port = 80
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for load balancer"
+    protocol          = "TCP"
+    description       = "Rule for load balancer"
     security_group_id = yandex_vpc_security_group.load-balancer.id
-    port           = 80
+    port              = 80
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for bastion ssh"
+    protocol          = "TCP"
+    description       = "Rule for bastion ssh"
     security_group_id = yandex_vpc_security_group.bastion.id
-    port           = 22
+    port              = 22
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule1 for metrics"
+    protocol          = "TCP"
+    description       = "Rule1 for metrics"
     security_group_id = yandex_vpc_security_group.prometheus.id
-    port           = 9100
+    port              = 9100
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule2 for metrics"
+    protocol          = "TCP"
+    description       = "Rule2 for metrics"
     security_group_id = yandex_vpc_security_group.prometheus.id
-    port           = 4040
+    port              = 4040
   }
 
   egress {
@@ -54,17 +54,17 @@ resource "yandex_vpc_security_group" "prometheus" {
   network_id  = yandex_vpc_network.vpc.id
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for grafana"
+    protocol          = "TCP"
+    description       = "Rule for grafana"
     security_group_id = yandex_vpc_security_group.grafana.id
-    port           = 9090
+    port              = 9090
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for bastion ssh"
+    protocol          = "TCP"
+    description       = "Rule for bastion ssh"
     security_group_id = yandex_vpc_security_group.bastion.id
-    port           = 22
+    port              = 22
   }
 
   egress {
@@ -80,24 +80,24 @@ resource "yandex_vpc_security_group" "elasticsearch" {
   network_id  = yandex_vpc_network.vpc.id
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for kibana"
+    protocol          = "TCP"
+    description       = "Rule for kibana"
     security_group_id = yandex_vpc_security_group.kibana.id
-    port           = 9200
+    port              = 9200
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for webservers"
+    protocol          = "TCP"
+    description       = "Rule for webservers"
     security_group_id = yandex_vpc_security_group.webservers.id
-    port           = 9200
+    port              = 9200
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for bastion ssh"
+    protocol          = "TCP"
+    description       = "Rule for bastion ssh"
     security_group_id = yandex_vpc_security_group.bastion.id
-    port           = 22
+    port              = 22
   }
 
   egress {
@@ -120,10 +120,10 @@ resource "yandex_vpc_security_group" "grafana" {
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for bastion ssh"
+    protocol          = "TCP"
+    description       = "Rule for bastion ssh"
     security_group_id = yandex_vpc_security_group.bastion.id
-    port           = 22
+    port              = 22
   }
 
   egress {
@@ -146,10 +146,10 @@ resource "yandex_vpc_security_group" "kibana" {
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule for bastion ssh"
+    protocol          = "TCP"
+    description       = "Rule for bastion ssh"
     security_group_id = yandex_vpc_security_group.bastion.id
-    port           = 22
+    port              = 22
   }
 
   egress {
@@ -178,22 +178,22 @@ resource "yandex_vpc_security_group" "load-balancer" {
     port              = 30080
   }
 
-#  ingress {
-#    protocol       = "TCP"
-#    description    = "Rule1 for healthchecks"
-#    v4_cidr_blocks = ["198.18.235.0/24"]
-#    from_port      = 1
-#    to_port        = 32767
-#  }
-#
-#  ingress {
-#    protocol       = "TCP"
-#    description    = "Rule2 for healthchecks"
-#    v4_cidr_blocks = ["198.18.248.0/24"]
-#    from_port      = 1
-#    to_port        = 32767
-#  }
-  
+  #  ingress {
+  #    protocol       = "TCP"
+  #    description    = "Rule1 for healthchecks"
+  #    v4_cidr_blocks = ["198.18.235.0/24"]
+  #    from_port      = 1
+  #    to_port        = 32767
+  #  }
+  #
+  #  ingress {
+  #    protocol       = "TCP"
+  #    description    = "Rule2 for healthchecks"
+  #    v4_cidr_blocks = ["198.18.248.0/24"]
+  #    from_port      = 1
+  #    to_port        = 32767
+  #  }
+
   egress {
     protocol       = "ANY"
     description    = "Rule out"

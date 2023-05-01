@@ -7,17 +7,17 @@ data "yandex_compute_image" "webserver" {
 }
 
 resource "yandex_compute_instance" "bastion" {
-  name        = "bastion"
-  hostname    = "bastion"
-  zone        = var.app_instance_zone
-  folder_id           = var.yc_folder_id
-  service_account_id  = yandex_iam_service_account.dude.id
-  description = "bastion"
-  platform_id = "standard-v3"
+  name               = "bastion"
+  hostname           = "bastion"
+  zone               = var.app_instance_zone
+  folder_id          = var.yc_folder_id
+  service_account_id = yandex_iam_service_account.dude.id
+  description        = "bastion"
+  platform_id        = "standard-v3"
 
   resources {
-    cores  = 2
-    memory = 2
+    cores         = 2
+    memory        = 2
     core_fraction = 20
   }
 
@@ -42,17 +42,17 @@ resource "yandex_compute_instance" "bastion" {
 }
 
 resource "yandex_compute_instance" "prometheus" {
-  name        = "prometheus"
-  hostname    = "prometheus"
-  zone        = var.app_instance_zone
-  folder_id           = var.yc_folder_id
-  service_account_id  = yandex_iam_service_account.dude.id
-  description = "prometheus"
-  platform_id = "standard-v3"
+  name               = "prometheus"
+  hostname           = "prometheus"
+  zone               = var.app_instance_zone
+  folder_id          = var.yc_folder_id
+  service_account_id = yandex_iam_service_account.dude.id
+  description        = "prometheus"
+  platform_id        = "standard-v3"
 
   resources {
-    cores  = 4
-    memory = 8
+    cores         = 4
+    memory        = 8
     core_fraction = 50
   }
 
@@ -75,17 +75,17 @@ resource "yandex_compute_instance" "prometheus" {
 }
 
 resource "yandex_compute_instance" "elastic" {
-  name        = "elastic"
-  hostname    = "elastic"
-  zone        = var.app_instance_zone
-  folder_id           = var.yc_folder_id
-  service_account_id  = yandex_iam_service_account.dude.id
-  description = "elasticsearch"
-  platform_id = "standard-v3"
+  name               = "elastic"
+  hostname           = "elastic"
+  zone               = var.app_instance_zone
+  folder_id          = var.yc_folder_id
+  service_account_id = yandex_iam_service_account.dude.id
+  description        = "elasticsearch"
+  platform_id        = "standard-v3"
 
   resources {
-    cores  = 4
-    memory = 4
+    cores         = 4
+    memory        = 4
     core_fraction = 50
   }
 
@@ -108,17 +108,17 @@ resource "yandex_compute_instance" "elastic" {
 }
 
 resource "yandex_compute_instance" "grafana" {
-  name        = "grafana"
-  hostname    = "grafana"
-  zone        = var.app_instance_zone
-  folder_id           = var.yc_folder_id
-  service_account_id  = yandex_iam_service_account.dude.id
-  description = "grafana + alertmanager"
-  platform_id = "standard-v3"
+  name               = "grafana"
+  hostname           = "grafana"
+  zone               = var.app_instance_zone
+  folder_id          = var.yc_folder_id
+  service_account_id = yandex_iam_service_account.dude.id
+  description        = "grafana + alertmanager"
+  platform_id        = "standard-v3"
 
   resources {
-    cores  = 2
-    memory = 4
+    cores         = 2
+    memory        = 4
     core_fraction = 50
   }
 
@@ -141,17 +141,17 @@ resource "yandex_compute_instance" "grafana" {
 }
 
 resource "yandex_compute_instance" "kibana" {
-  name        = "kibana"
-  hostname    = "kibana"
-  zone        = var.app_instance_zone
-  folder_id           = var.yc_folder_id
-  service_account_id  = yandex_iam_service_account.dude.id
-  description = "kibana"
-  platform_id = "standard-v3"
+  name               = "kibana"
+  hostname           = "kibana"
+  zone               = var.app_instance_zone
+  folder_id          = var.yc_folder_id
+  service_account_id = yandex_iam_service_account.dude.id
+  description        = "kibana"
+  platform_id        = "standard-v3"
 
   resources {
-    cores  = 2
-    memory = 4
+    cores         = 2
+    memory        = 4
     core_fraction = 50
   }
 
@@ -184,9 +184,9 @@ resource "yandex_compute_instance_group" "web-netology" {
   }
 
   instance_template {
-    platform_id = "standard-v3"
-    name = "webserver-{instance.short_id}"
-    hostname = "webserver-{instance.short_id}"
+    platform_id        = "standard-v3"
+    name               = "webserver-{instance.short_id}"
+    hostname           = "webserver-{instance.short_id}"
     service_account_id = yandex_iam_service_account.dude.id
     resources {
       cores         = 2
@@ -204,14 +204,14 @@ resource "yandex_compute_instance_group" "web-netology" {
     }
 
     network_interface {
-      network_id = yandex_vpc_network.vpc.id
-      subnet_ids = [yandex_vpc_subnet.private-web-a.id,yandex_vpc_subnet.private-web-b.id,yandex_vpc_subnet.private-web-c.id]
-      ipv6       = false
+      network_id         = yandex_vpc_network.vpc.id
+      subnet_ids         = [yandex_vpc_subnet.private-web-a.id, yandex_vpc_subnet.private-web-b.id, yandex_vpc_subnet.private-web-c.id]
+      ipv6               = false
       security_group_ids = [yandex_vpc_security_group.webservers.id]
     }
 
     metadata = {
-       user-data = file("meta/webserver.yaml")
+      user-data = file("meta/webserver.yaml")
     }
   }
 

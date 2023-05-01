@@ -1,7 +1,7 @@
 resource "yandex_alb_http_router" "cw-netology" {
   name = "cw-netology"
   labels = {
-    tf-label    = "cw-netology"
+    tf-label = "cw-netology"
   }
 }
 
@@ -20,14 +20,14 @@ resource "yandex_alb_backend_group" "cw-netology" {
       panic_threshold = 5
     }
     healthcheck {
-      timeout              = "2s"
-      interval             = "2s"
-      healthcheck_port     = 80
+      timeout          = "2s"
+      interval         = "2s"
+      healthcheck_port = 80
       http_healthcheck {
         path = "/"
       }
     }
-#    http2 = "false"
+    #    http2 = "false"
   }
 }
 

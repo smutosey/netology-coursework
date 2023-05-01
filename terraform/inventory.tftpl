@@ -1,17 +1,31 @@
 all:
   children:
-    bastion:
-      ${bastion}
-    web:
-      %{ for ip in webservers ~}
-      ${ip}
-      %{ endfor ~}
-    prometheus:
-      ${prometheus}
-    grafana:
-      ${grafana}
-    elastic:
-      ${elastic}
-    kibana:
-      ${kibana}
-ansible_ssh_common_args: '-J ansible@${bastion}"'
+
+    jump:
+      hosts:
+        ${bastion.hostname}:
+          ansible_host: ${bastion.ip}
+      vars:
+        ansible_ssh_common_args:
+
+    webservers:
+      hosts:
+%{ for i in webservers ~}
+        ${i.hostname}:
+          ansible_host: ${i.ip}
+%{ endfor ~}
+
+    observability:
+      hosts:
+        ${prometheus.hostname}:
+          ansible_host: ${prometheus.ip}
+        ${grafana.hostname}:
+          ansible_host: ${grafana.ip}
+        ${elastic.hostname}:
+          ansible_host: ${elastic.ip}
+        ${kibana.hostname}:
+          ansible_host: ${kibana.ip}
+  vars:
+    ansible_ssh_common_args: '-J ansible@${bastion.ip}'
+    ansible_user: ansible
+    ansible_become: true
