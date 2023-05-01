@@ -9,7 +9,7 @@ data "yandex_compute_image" "webserver" {
 resource "yandex_compute_instance" "bastion" {
   name        = "bastion"
   hostname    = "bastion"
-  zone        = "ru-central1-b"
+  zone        = var.app_instance_zone
   folder_id           = var.yc_folder_id
   service_account_id  = yandex_iam_service_account.dude.id
   description = "bastion"
@@ -36,15 +36,140 @@ resource "yandex_compute_instance" "bastion" {
     security_group_ids = [yandex_vpc_security_group.bastion.id]
   }
 
-#  network_interface {
-#    subnet_id          = yandex_vpc_subnet.internal-bastion.id
-#    ip_address         = "192.168.99.99"
-#    ipv6               = false
-#    security_group_ids = [yandex_vpc_security_group.internal-bastion.id]
-#  }
+  metadata = {
+    user-data = file("./meta/default.yaml")
+  }
+}
+
+resource "yandex_compute_instance" "prometheus" {
+  name        = "prometheus"
+  hostname    = "prometheus"
+  zone        = var.app_instance_zone
+  folder_id           = var.yc_folder_id
+  service_account_id  = yandex_iam_service_account.dude.id
+  description = "prometheus"
+  platform_id = "standard-v3"
+
+  resources {
+    cores  = 4
+    memory = 8
+    core_fraction = 50
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.base.id
+      size     = 20
+      type     = "network-ssd"
+    }
+  }
+
+  network_interface {
+    subnet_id          = yandex_vpc_subnet.private-observability.id
+    security_group_ids = [yandex_vpc_security_group.prometheus.id]
+  }
 
   metadata = {
-    user-data = file("./meta/bastion.yaml")
+    user-data = file("./meta/default.yaml")
+  }
+}
+
+resource "yandex_compute_instance" "elastic" {
+  name        = "elastic"
+  hostname    = "elastic"
+  zone        = var.app_instance_zone
+  folder_id           = var.yc_folder_id
+  service_account_id  = yandex_iam_service_account.dude.id
+  description = "elasticsearch"
+  platform_id = "standard-v3"
+
+  resources {
+    cores  = 4
+    memory = 4
+    core_fraction = 50
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.base.id
+      size     = 20
+      type     = "network-ssd"
+    }
+  }
+
+  network_interface {
+    subnet_id          = yandex_vpc_subnet.private-observability.id
+    security_group_ids = [yandex_vpc_security_group.elasticsearch.id]
+  }
+
+  metadata = {
+    user-data = file("./meta/default.yaml")
+  }
+}
+
+resource "yandex_compute_instance" "grafana" {
+  name        = "grafana"
+  hostname    = "grafana"
+  zone        = var.app_instance_zone
+  folder_id           = var.yc_folder_id
+  service_account_id  = yandex_iam_service_account.dude.id
+  description = "grafana + alertmanager"
+  platform_id = "standard-v3"
+
+  resources {
+    cores  = 2
+    memory = 4
+    core_fraction = 50
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.base.id
+      size     = 20
+      type     = "network-ssd"
+    }
+  }
+
+  network_interface {
+    subnet_id          = yandex_vpc_subnet.private-observability.id
+    security_group_ids = [yandex_vpc_security_group.elasticsearch.id]
+  }
+
+  metadata = {
+    user-data = file("./meta/default.yaml")
+  }
+}
+
+resource "yandex_compute_instance" "kibana" {
+  name        = "kibana"
+  hostname    = "kibana"
+  zone        = var.app_instance_zone
+  folder_id           = var.yc_folder_id
+  service_account_id  = yandex_iam_service_account.dude.id
+  description = "kibana"
+  platform_id = "standard-v3"
+
+  resources {
+    cores  = 2
+    memory = 4
+    core_fraction = 50
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.base.id
+      size     = 20
+      type     = "network-ssd"
+    }
+  }
+
+  network_interface {
+    subnet_id          = yandex_vpc_subnet.private-observability.id
+    security_group_ids = [yandex_vpc_security_group.elasticsearch.id]
+  }
+
+  metadata = {
+    user-data = file("./meta/default.yaml")
   }
 }
 

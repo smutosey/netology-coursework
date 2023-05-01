@@ -1,0 +1,17 @@
+all:
+  children:
+    bastion:
+      ${bastion}
+    web:
+      %{ for ip in webservers ~}
+      ${ip}
+      %{ endfor ~}
+    prometheus:
+      ${prometheus}
+    grafana:
+      ${grafana}
+    elastic:
+      ${elastic}
+    kibana:
+      ${kibana}
+ansible_ssh_common_args: '-J ansible@${bastion}"'

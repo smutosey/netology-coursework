@@ -58,7 +58,7 @@ resource "yandex_vpc_subnet" "public" {
 
 resource "yandex_vpc_subnet" "bastion" {
   name           = "bastion"
-  zone           = "ru-central1-b"
+  zone           = var.app_instance_zone
   network_id     = yandex_vpc_network.vpc.id
   v4_cidr_blocks = ["192.168.99.0/24"]
 }
