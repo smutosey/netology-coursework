@@ -3,13 +3,13 @@ resource "yandex_vpc_security_group" "webservers" {
   description = "Webservers security group"
   network_id  = yandex_vpc_network.vpc.id
 
-  ingress {
-    protocol       = "TCP"
-    description    = "Rule1 for healthchecks"
-    v4_cidr_blocks = ["0.0.0.0/0"]
-    from_port      = 1
-    to_port        = 32767
-  }
+#  ingress {
+#    protocol       = "TCP"
+#    description    = "Rule1 for healthchecks"
+#    v4_cidr_blocks = ["0.0.0.0/0"]
+#    from_port      = 1
+#    to_port        = 32767
+#  }
 
   ingress {
     protocol       = "TCP"
@@ -170,20 +170,27 @@ resource "yandex_vpc_security_group" "load-balancer" {
   }
 
   ingress {
-    protocol       = "TCP"
-    description    = "Rule1 for healthchecks"
-    v4_cidr_blocks = ["198.18.235.0/24"]
-    from_port      = 1
-    to_port        = 32767
+    protocol          = "TCP"
+    description       = "healthchecks"
+    predefined_target = "loadbalancer_healthchecks"
+    port              = 30080
   }
 
-  ingress {
-    protocol       = "TCP"
-    description    = "Rule2 for healthchecks"
-    v4_cidr_blocks = ["198.18.248.0/24"]
-    from_port      = 1
-    to_port        = 32767
-  }
+#  ingress {
+#    protocol       = "TCP"
+#    description    = "Rule1 for healthchecks"
+#    v4_cidr_blocks = ["198.18.235.0/24"]
+#    from_port      = 1
+#    to_port        = 32767
+#  }
+#
+#  ingress {
+#    protocol       = "TCP"
+#    description    = "Rule2 for healthchecks"
+#    v4_cidr_blocks = ["198.18.248.0/24"]
+#    from_port      = 1
+#    to_port        = 32767
+#  }
   
   egress {
     protocol       = "ANY"
