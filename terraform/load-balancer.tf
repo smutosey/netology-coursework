@@ -47,8 +47,8 @@ resource "yandex_alb_virtual_host" "cw-netology" {
 
 resource "yandex_alb_load_balancer" "cw-netology" {
   name = "cw-netology"
-
   network_id = yandex_vpc_network.vpc.id
+  security_group_ids = [yandex_vpc_security_group.load-balancer.id]
 
   allocation_policy {
     location {
@@ -73,6 +73,9 @@ resource "yandex_alb_load_balancer" "cw-netology" {
       address {
         external_ipv4_address {
         }
+#        internal_ipv4_address {
+#          subnet_id = yandex_vpc_subnet.public.id
+#        }
       }
       ports = [80]
     }
