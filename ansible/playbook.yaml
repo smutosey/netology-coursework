@@ -1,0 +1,40 @@
+- name: Setup docker in observability cluster
+  hosts:
+    - observability
+    - webservers
+  roles:
+    - docker-host
+
+- name: Elasticsearch setup
+  hosts: elastic
+  roles:
+    - elasticsearch
+
+- name: Kibana setup
+  hosts: kibana
+  roles:
+    - kibana
+#
+#- name: Prometheus setup
+#  hosts: prometheus
+#  roles:
+#    - prometheus
+#    - pg-prom-adapter
+#
+#- name: Grafana setup
+#  hosts: grafana
+#  roles:
+#    - grafana
+#    - alertmanager
+#
+#- name: Configure Web Servers instance group
+#  hosts: webservers
+#  roles:
+#    - node-exporter
+#    - nginx-log-exporter
+#    - filebeat
+#
+#- name: Configure observability cluster meta-monitoring
+#  hosts: observability
+#  roles:
+#    - filebeat

@@ -1,0 +1,65 @@
+version: '3'
+services:
+  elastic-01:
+    image: elasticsearch:8.7.0
+    container_name: elastic-01
+    environment:
+      - node.name=elastic-01
+      - cluster.name=es-netology-cluster
+      - discovery.seed_hosts=elastic-02,elastic-03
+      - cluster.initial_master_nodes=elastic-01,elastic-02,elastic-03
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /elastic/data-01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  elastic-02:
+    image: elasticsearch:8.7.0
+    container_name: elastic-02
+    environment:
+      - node.name=elastic-01
+      - cluster.name=es-netology-cluster
+      - discovery.seed_hosts=elastic-01,elastic-03
+      - cluster.initial_master_nodes=elastic-01,elastic-02,elastic-03
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /elastic/data-02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  elastic-03:
+    image: elasticsearch:8.7.0
+    container_name: elastic-03
+    environment:
+      - node.name=elastic-03
+      - cluster.name=es-netology-cluster
+      - discovery.seed_hosts=elastic-01,elastic-02
+      - cluster.initial_master_nodes=elastic-01,elastic-02,elastic-03
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /elastic/data-03:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge

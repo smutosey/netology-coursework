@@ -20,7 +20,7 @@ output "instances_external_ips" {
 
 
 resource "local_file" "inventory" {
-  content = templatefile("${path.module}/inventory.tftpl",
+  content = templatefile("${path.module}/templates/inventory.tftpl",
     {
       bastion = tomap({
         "ip"       = yandex_compute_instance.bastion.network_interface.0.nat_ip_address,

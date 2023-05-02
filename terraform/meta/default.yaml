@@ -11,7 +11,7 @@ apt:
 #  - python3-pip
 #
 #runcmd:
-#  - [ python3, -m, pip, install, --user, ansible ]
+#  - [ sysctl, -w, vm.max_map_count=262144 ]
 
 users:
  - name: ansible
