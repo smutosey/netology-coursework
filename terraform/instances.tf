@@ -133,7 +133,7 @@ resource "yandex_compute_instance" "grafana" {
   network_interface {
     subnet_id          = yandex_vpc_subnet.public.id
     nat                = true
-    security_group_ids = [yandex_vpc_security_group.elasticsearch.id]
+    security_group_ids = [yandex_vpc_security_group.grafana.id]
   }
 
   metadata = {
@@ -167,7 +167,7 @@ resource "yandex_compute_instance" "kibana" {
   network_interface {
     subnet_id          = yandex_vpc_subnet.public.id
     nat                = true
-    security_group_ids = [yandex_vpc_security_group.elasticsearch.id]
+    security_group_ids = [yandex_vpc_security_group.kibana.id]
   }
 
   metadata = {
