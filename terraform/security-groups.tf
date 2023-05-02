@@ -48,6 +48,18 @@ resource "yandex_vpc_security_group" "webservers" {
   }
 }
 
+resource "yandex_vpc_security_group" "postgres" {
+  name        = "postgres"
+  network_id  = yandex_vpc_network.vpc.id
+
+  ingress {
+    protocol          = "TCP"
+    description       = "Rule for incoming requests from Prometheus"
+    security_group_id = yandex_vpc_security_group.prometheus.id
+    port              = 6432
+  }
+}
+
 resource "yandex_vpc_security_group" "prometheus" {
   name        = "prometheus"
   description = "Prometheus security group"

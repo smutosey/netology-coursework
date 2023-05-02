@@ -28,6 +28,18 @@ output "external_instances_ip" {
   }
 }
 
+output "pg_cluster_id" {
+  value = yandex_mdb_postgresql_cluster.postgres.id
+}
+
+resource "local_file" "tf_ansible_vars_file" {
+  content = <<-DOC
+    pg_cluster_id: ${yandex_mdb_postgresql_cluster.postgres.id}
+    pg_admin_password: ${var.pg_admin_password}
+    DOC
+  filename = "../ansible/vars/terraform_vars.yml"
+}
+
 
 resource "local_file" "inventory" {
   content = templatefile("${path.module}/templates/inventory.tftpl",

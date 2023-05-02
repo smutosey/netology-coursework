@@ -24,3 +24,7 @@ variable "app_instance_zone" {
   description = "Zone for public servers"
   default     = "ru-central1-b"
 }
+
+variable "pg_admin_password" {
+  description = "password for PG user database admin"
+}
