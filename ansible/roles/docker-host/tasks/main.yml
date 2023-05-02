@@ -1,0 +1,47 @@
+---
+# tasks file for docker-host
+- name: Update apt and install docker-ce
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - python3-pip
+    state: latest
+    update_cache: true
+
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Update apt and install docker-ce
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+    update_cache: true
+
+- name: pip self-update
+  ansible.builtin.pip:
+    name: pip
+    state: latest
+
+- name: Install Docker Module for Python
+  ansible.builtin.pip:
+    name: docker-compose
+
+- name: Adding user ansible in docker group
+  ansible.builtin.user:
+    name: ansible
+    groups: docker
+    append: yes
