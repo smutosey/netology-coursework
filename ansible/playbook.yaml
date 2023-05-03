@@ -1,29 +1,32 @@
-- name: Netology coursework by Nedorezov A.
-  vars_files:
-    - ./vars/terraform_vars.yml
-  tasks:
-    - name: Setup docker engine and python plugins for docker compose
-      hosts:
-        - observability
-        - webservers
-      roles:
-        - docker-host
 
-    - name: Elasticsearch setup
-      hosts: elastic
-      roles:
-        - elasticsearch
+- name: Setup docker engine and python plugins for docker compose
+  hosts:
+    - observability
+    - webservers
+  roles:
+    - docker-host
 
-    - name: Kibana setup
-      hosts: kibana
-      roles:
-        - kibana
+- name: Elasticsearch setup
+  hosts: elastic
+  roles:
+    - elasticsearch
 
-    - name: Prometheus setup
-      hosts: prometheus
-      roles:
-        - prometheus
-        - pg-prom-adapter
+- name: Kibana setup
+  hosts: kibana
+  roles:
+    - kibana
+
+- name: Configure Web Servers instance group
+  hosts: webservers
+  roles:
+    - node-exporter
+    - nginx-log-exporter
+
+#    - name: Prometheus setup
+#      hosts: prometheus
+#      roles:
+#        - prometheus
+#        - pg-prom-adapter
 
 
 
@@ -34,14 +37,11 @@
 #    - grafana
 #    - alertmanager
 #
-#- name: Configure Web Servers instance group
-#  hosts: webservers
-#  roles:
-#    - node-exporter
-#    - nginx-log-exporter
-#    - filebeat
+
 #
-#- name: Configure observability cluster meta-monitoring
-#  hosts: observability
+#- name: Configure filebeats
+#  hosts:
+#    - observability
+#    - webservers
 #  roles:
 #    - filebeat
