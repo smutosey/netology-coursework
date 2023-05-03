@@ -180,7 +180,7 @@ resource "yandex_vpc_security_group" "load-balancer" {
     protocol       = "TCP"
     description    = "Rule for income"
     v4_cidr_blocks = ["0.0.0.0/0"]
-    port           = 80
+    port           = 443
   }
 
   ingress {

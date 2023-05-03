@@ -28,3 +28,7 @@ variable "app_instance_zone" {
 variable "pg_admin_password" {
   description = "password for PG user database admin"
 }
+
+variable "tls_cert_id" {
+  description = "TLS cert id for load balancer"
+}

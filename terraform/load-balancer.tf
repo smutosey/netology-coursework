@@ -77,12 +77,15 @@ resource "yandex_alb_load_balancer" "cw-netology" {
 #          subnet_id = yandex_vpc_subnet.public.id
 #        }
       }
-      ports = [80]
+      ports = [443]
     }
-    http {
-      handler {
-        http_router_id = yandex_alb_http_router.cw-netology.id
-      }
+    tls {
+      default_handler {
+          certificate_ids = [ var.tls_cert_id ]
+          http_handler {
+            http_router_id = yandex_alb_http_router.cw-netology.id
+          }
+        }
     }
   }
 }

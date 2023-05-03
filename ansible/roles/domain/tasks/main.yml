@@ -1,0 +1,30 @@
+---
+# tasks file for domain accept
+
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: '0755'
+  loop:
+    - { path: /var/www/html/.well-known/acme-challenge }
+
+- name: Copy file html
+  ansible.builtin.copy:
+    src: "{{ role_path }}/defaults/"
+    dest: /var/www/html/.well-known/acme-challenge/
+    mode: '0644'
+
+- name: Copy file nginx.conf
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/nginx.conf"
+    dest: /etc/nginx/sites-available/default
+    mode: '0644'
+
+- name: Restart service nginx
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: nginx.service

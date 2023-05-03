@@ -1,0 +1,6 @@
+
+- name: Check rights for domain
+  hosts:
+    - webservers
+  roles:
+    - domain

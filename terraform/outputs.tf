@@ -25,6 +25,7 @@ output "external_instances_ip" {
     bastion = yandex_compute_instance.bastion.network_interface.0.nat_ip_address
     kibana = yandex_compute_instance.kibana.network_interface.0.nat_ip_address
     grafana = yandex_compute_instance.grafana.network_interface.0.nat_ip_address
+    load_balancer = yandex_alb_load_balancer.cw-netology.listener.0.endpoint.0.address.0.external_ipv4_address.0.address
   }
 }
 
@@ -36,6 +37,9 @@ resource "local_file" "tf_ansible_vars_file" {
   content = <<-DOC
     pg_cluster_id: ${yandex_mdb_postgresql_cluster.postgres.id}
     pg_admin_password: ${var.pg_admin_password}
+    webserver_node_1: ${yandex_compute_instance_group.web-netology.instances.0.name}
+    webserver_node_2: ${yandex_compute_instance_group.web-netology.instances.1.name}
+    webserver_node_3: ${yandex_compute_instance_group.web-netology.instances.2.name}
     DOC
   filename = "../ansible/vars/terraform_vars.yml"
 }

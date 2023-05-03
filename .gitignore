@@ -1,6 +1,7 @@
 /init
 .idea
 .home
+/ansible/vars
 
 # Local .terraform directories
 /terraform/.terraform
