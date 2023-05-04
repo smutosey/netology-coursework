@@ -39,12 +39,18 @@
   roles:
     - grafana
 
+- name: Configure filebeats for nginx
+  hosts:
+    - webservers
+  roles:
+    - filebeat
+  vars:
+    mode: nginx
 
-
-#
-#- name: Configure filebeats
-#  hosts:
-#    - observability
-#    - webservers
-#  roles:
-#    - filebeat
+- name: Configure filebeats for containers
+  hosts:
+    - observability
+  roles:
+    - filebeat
+  vars:
+    mode: docker

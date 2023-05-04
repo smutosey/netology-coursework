@@ -1,0 +1,51 @@
+---
+# tasks file for filebeat
+- name: FILEBEAT - Install filebeat from mirror
+  ansible.builtin.apt:
+    deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/f/filebeat/filebeat-8.1.1-amd64.deb"
+
+- name: FILEBEAT - Copy config file
+  ansible.builtin.copy:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml
+
+- name: FILEBEAT - Set shipper name
+  lineinfile:
+    dest: /etc/filebeat/filebeat.yml
+    state: present
+    regexp: '^name:'
+    line: 'name: {{ ansible_hostname }}'
+    insertafter: '# Shipper Name'
+
+
+- name: FILEBEAT - Configure Nginx Logging
+  blockinfile:
+    dest: /etc/filebeat/filebeat.yml
+    insertafter: 'filebeat.modules:'
+    marker: "# {mark} -- Nginx logging configured by Ansible"
+    block: |
+      - module: nginx
+        access:
+        error:
+  when: mode == "nginx"
+
+- name: FILEBEAT - Configure Container Logging
+  blockinfile:
+    dest: /etc/filebeat/filebeat.yml
+    insertafter: 'filebeat.inputs:'
+    marker: "# {mark} -- Docker Container logging configured by Ansible"
+    block: |
+      - type: container
+        enabled: true
+        paths:
+          - /var/lib/docker/containers/*/*.log
+  when: mode == "docker"
+
+- name: enable filebeat
+  systemd:
+    name: filebeat
+    enabled: yes
+    state: started
+
+- name: setup filebeat
+  shell: 'filebeat setup'

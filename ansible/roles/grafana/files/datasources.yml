@@ -3,13 +3,13 @@ datasources:
   - name: Prometheus
     type: prometheus
     uid: prometheus
-    url: http://prometheus:9090/prometheus
+    url: http://prometheus:9090/
     access: proxy
     basicAuth: false
     jsonData:
       httpMethod: POST
       manageAlerts: true
       prometheusType: Prometheus
-      prometheusVersion: 2.43.0
+      prometheusVersion: 2.40.0
     editable: true
     isDefault: true
