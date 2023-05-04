@@ -2,10 +2,8 @@
 Description=PG Prometheus Adapter
 
 [Service]
-Environment="DATABASE_URL="user=prom password={{ pg_admin_password }} host=c-{{ pg_cluster_id }}.rw.mdb.yandexcloud.net port=6432 database=metrics""
-User=andible
-Group=ansible
-ExecStart=/usr/local/bin/demo
+EnvironmentFile={{ ansible_workdir }}/pgadapter/pgadapter.env
+ExecStart=/usr/local/bin/postgresql-prometheus-adapter
 Restart=on-failure
 
 [Install]

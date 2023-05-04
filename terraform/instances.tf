@@ -51,8 +51,8 @@ resource "yandex_compute_instance" "prometheus" {
   platform_id        = "standard-v3"
 
   resources {
-    cores         = 4
-    memory        = 8
+    cores         = 2
+    memory        = 4
     core_fraction = 50
   }
 
@@ -84,7 +84,7 @@ resource "yandex_compute_instance" "elastic" {
   platform_id        = "standard-v3"
 
   resources {
-    cores         = 4
+    cores         = 2
     memory        = 4
     core_fraction = 50
   }
@@ -228,7 +228,7 @@ resource "yandex_compute_instance_group" "web-netology" {
   }
 
   deploy_policy {
-    max_unavailable = 2
+    max_unavailable = 1
     max_expansion   = 1
     max_deleting    = 2
     max_creating    = 3

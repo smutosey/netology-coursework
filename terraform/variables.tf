@@ -29,6 +29,10 @@ variable "pg_admin_password" {
   description = "password for PG user database admin"
 }
 
+variable "kibana_password" {
+  description = "password for Kibana admin"
+}
+
 variable "tls_cert_id" {
   description = "TLS cert id for load balancer"
 }

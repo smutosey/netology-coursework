@@ -22,10 +22,10 @@ output "internal_instances_ips" {
 output "external_instances_ip" {
   description = "Internal IP address of webservers."
   value       = {
-    bastion = yandex_compute_instance.bastion.network_interface.0.nat_ip_address
-    kibana = yandex_compute_instance.kibana.network_interface.0.nat_ip_address
-    grafana = yandex_compute_instance.grafana.network_interface.0.nat_ip_address
-    load_balancer = yandex_alb_load_balancer.cw-netology.listener.0.endpoint.0.address.0.external_ipv4_address.0.address
+    "bastion(22)" = yandex_compute_instance.bastion.network_interface.0.nat_ip_address
+    "kibana(5601)" = yandex_compute_instance.kibana.network_interface.0.nat_ip_address
+    "grafana(3000)" = yandex_compute_instance.grafana.network_interface.0.nat_ip_address
+    "load_balancer(443)" = yandex_alb_load_balancer.cw-netology.listener.0.endpoint.0.address.0.external_ipv4_address.0.address
   }
 }
 
@@ -40,6 +40,8 @@ resource "local_file" "tf_ansible_vars_file" {
     webserver_node_1: ${yandex_compute_instance_group.web-netology.instances.0.name}
     webserver_node_2: ${yandex_compute_instance_group.web-netology.instances.1.name}
     webserver_node_3: ${yandex_compute_instance_group.web-netology.instances.2.name}
+    kibana_password: ${var.kibana_password}
+    ansible_workdir: ${var.ansible_workdir}
     DOC
   filename = "../ansible/vars/terraform_vars.yml"
 }

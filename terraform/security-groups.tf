@@ -107,6 +107,27 @@ resource "yandex_vpc_security_group" "elasticsearch" {
 
   ingress {
     protocol          = "TCP"
+    description       = "Rule for prometheus"
+    security_group_id = yandex_vpc_security_group.prometheus.id
+    port              = 9200
+  }
+
+  ingress {
+    protocol          = "TCP"
+    description       = "Rule for grafana"
+    security_group_id = yandex_vpc_security_group.grafana.id
+    port              = 9200
+  }
+
+  ingress {
+    protocol          = "TCP"
+    description       = "Rule for kibana"
+    security_group_id = yandex_vpc_security_group.kibana.id
+    port              = 9200
+  }
+
+  ingress {
+    protocol          = "TCP"
     description       = "Rule for bastion ssh"
     security_group_id = yandex_vpc_security_group.bastion.id
     port              = 22
@@ -155,6 +176,13 @@ resource "yandex_vpc_security_group" "kibana" {
     description    = "Rule for all"
     v4_cidr_blocks = ["0.0.0.0/0"]
     port           = 5601
+  }
+
+  ingress {
+    protocol          = "TCP"
+    description       = "Rule for metrics"
+    security_group_id = yandex_vpc_security_group.prometheus.id
+    port              = 9100
   }
 
   ingress {

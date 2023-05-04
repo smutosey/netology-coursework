@@ -1,2 +1,24 @@
 ---
 # tasks file for alertmanager
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    mode: '0755'
+  loop:
+    - { path: "{{ ansible_workdir }}/alertmanager" }
+
+- name: Replace alertmanager config
+  ansible.builtin.copy:
+    src: alertmanager.yml
+    dest: "{{ ansible_workdir }}/alertmanager/alertmanager.yml"
+
+- name: Alertmanager container start
+  community.docker.docker_container:
+    name: alertmanager
+    image: prom/alertmanager
+    ports:
+      - "127.0.0.1:9093:9093"
+    volumes:
+      - "{{ ansible_workdir }}/alertmanager:/config"
+    command: --config.file=/config/alertmanager.yml

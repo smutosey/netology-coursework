@@ -1,2 +1,38 @@
 ---
 # tasks file for grafana
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: ansible
+    group: docker
+    mode: '0755'
+  loop:
+    - { path: "{{ ansible_workdir }}/grafana/" }
+
+- name: Copy yaml configs to target
+  ansible.builtin.copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '0644'
+  loop:
+    - { src: datasources.yml, dest: "{{ ansible_workdir }}/grafana/datasources.yml"}
+
+- name: Make docker-compose
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '0644'
+  loop:
+    - { src: docker-compose.yml.j2, dest: "{{ ansible_workdir }}/grafana/docker-compose.yml"}
+
+- name: Run `docker-compose up`
+  community.docker.docker_compose:
+    project_src: "{{ ansible_workdir }}/grafana/"
+    pull: true
+    state: present
+  register: compose
+
+- name: Output of compose Grafana service
+  ansible.builtin.debug:
+    var: compose

@@ -10,24 +10,24 @@
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
-    owner: 1000
+    owner: ansible
     group: docker
     mode: '0755'
   loop:
-    - { path: /home/ansible/elastic }
-    - { path: /elastic/data-01 }
-    - { path: /elastic/data-02 }
-    - { path: /elastic/data-03 }
+    - { path: "{{ ansible_workdir }}/elastic-conf" }
+    - { path: "{{ ansible_workdir }}/elastic/data-01" }
+    - { path: "{{ ansible_workdir }}/elastic/data-02" }
+    - { path: "{{ ansible_workdir }}/elastic/data-03" }
 
 - name: Copy docker-compose yaml to target
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/docker-compose.yml"
-    dest: /home/ansible/elastic/docker-compose.yml
+  ansible.builtin.template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ ansible_workdir }}/elastic-conf/docker-compose.yml"
     mode: '0644'
 
 - name: Run `docker-compose up`
   community.docker.docker_compose:
-    project_src: /home/ansible/elastic/
+    project_src: "{{ ansible_workdir }}/elastic-conf/"
     pull: true
     state: present
   register: compose

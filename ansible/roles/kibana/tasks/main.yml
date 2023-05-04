@@ -8,17 +8,17 @@
     group: docker
     mode: '0755'
   loop:
-    - { path: /home/ansible/kibana }
+    - { path: "{{ ansible_workdir }}/kibana" }
 
 - name: Copy docker-compose yaml to target
   ansible.builtin.copy:
-    src: "{{ role_path }}/files/docker-compose.yml"
-    dest: /home/ansible/kibana/docker-compose.yml
+    src: "docker-compose.yml"
+    dest: "{{ ansible_workdir }}/kibana/docker-compose.yml"
     mode: '0644'
 
 - name: Run `docker-compose up`
   community.docker.docker_compose:
-    project_src: /home/ansible/kibana/
+    project_src: "{{ ansible_workdir }}/kibana/"
     pull: true
     state: present
   register: compose

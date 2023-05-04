@@ -16,20 +16,30 @@
     group: root
     mode: 0755
 
+- name: Create dir prometheus-nginxlog-exporter
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: directory
+    owner: 1000
+    group: docker
+    mode: '0755'
+  loop:
+    - { path: "{{ ansible_workdir }}/prometheus-nginxlog-exporter" }
+
 - name: Make exporter config from template
   ansible.builtin.template:
     src: config.hcl.j2
-    dest: /etc/prometheus-nginxlog-exporter.hcl
+    dest: "{{ ansible_workdir }}/prometheus-nginxlog-exporter/config.hcl"
 
 - name: install unit file to systemd
-  ansible.builtin.copy:
-    src: nginx-log-exporter.service
+  ansible.builtin.template:
+    src: nginx-log-exporter.service.j2
     dest: /etc/systemd/system/nginx-log-exporter.service
     owner: root
     group: root
     mode: 0600
 
-- name: Start  unit
+- name: Start unit
   ansible.builtin.systemd:
     name: nginx-log-exporter.service
     state: started

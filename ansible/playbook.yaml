@@ -1,4 +1,3 @@
-
 - name: Setup docker engine and python plugins for docker compose
   hosts:
     - observability
@@ -16,27 +15,31 @@
   roles:
     - kibana
 
-- name: Configure Web Servers instance group
+- name: Configure Nginx Log Exporter on webservers
   hosts: webservers
   roles:
-    - node-exporter
     - nginx-log-exporter
 
-#    - name: Prometheus setup
-#      hosts: prometheus
-#      roles:
-#        - prometheus
-#        - pg-prom-adapter
+- name: Configure Node Exporter on each server
+  hosts:
+    - webservers
+    - observability
+  roles:
+    - node-exporter
+
+- name: Prometheus setup
+  hosts: prometheus
+  roles:
+    - pg-prom-adapter
+    - alertmanager
+    - prometheus
+
+- name: Grafana setup
+  hosts: grafana
+  roles:
+    - grafana
 
 
-
-#
-#- name: Grafana setup
-#  hosts: grafana
-#  roles:
-#    - grafana
-#    - alertmanager
-#
 
 #
 #- name: Configure filebeats
