@@ -23,18 +23,25 @@ remote_read:
 
 scrape_configs:
   - job_name: 'webservers-nginx'
+    tls_config:
+      insecure_skip_verify: true
     scrape_interval: 15s
     scrape_timeout: 15s
 
     static_configs:
       - targets:
-    {% for server in groups['all'] %}
+    {% for server in groups['webservers'] %}
         - {{ server }}:4040
     {% endfor %}
 
   - job_name: 'nodes'
+    tls_config:
+      insecure_skip_verify: true
+    scrape_interval: 15s
+    scrape_timeout: 15s
     static_configs:
       - targets:
-    {% for server in groups['all'] %}
+    {% for server in groups['observability'] | union(groups['webservers']) %}
         - {{ server }}:9100
     {% endfor %}
+

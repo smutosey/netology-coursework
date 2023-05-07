@@ -1,12 +1,12 @@
 ---
 # tasks file for node-exporter
-- name: Download and unarchive
+- name: NODE EXPORTER - Download and unarchive
   ansible.builtin.unarchive:
     remote_src: yes
     src: https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
     dest: /tmp
 
-- name: Move binary to /usr/local/bin
+- name: NODE EXPORTER - Move binary to /usr/local/bin
   ansible.builtin.copy:
     src: /tmp/node_exporter-1.5.0.linux-amd64/node_exporter
     dest: /usr/local/bin/node_exporter
@@ -15,7 +15,7 @@
     group: root
     mode: 0755
 
-- name: Copy unit file to systemd
+- name: NODE EXPORTER - Copy unit file to systemd
   ansible.builtin.copy:
     src: node-exporter.service
     dest: /etc/systemd/system/node-exporter.service
@@ -23,7 +23,18 @@
     group: root
     mode: 0600
 
-- name: Start unit
+- name: NODE EXPORTER - allow connections to
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 9100
+    jump: ACCEPT
+    action: insert
+    rule_num: 1
+    match: tcp
+    comment: Accept new NODE_EXPORTER connections.
+
+- name: NODE EXPORTER - Start unit
   ansible.builtin.systemd:
     name: node-exporter.service
     state: started

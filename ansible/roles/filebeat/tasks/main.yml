@@ -17,7 +17,6 @@
     line: 'name: {{ ansible_hostname }}'
     insertafter: '# Shipper Name'
 
-
 - name: FILEBEAT - Configure Nginx Logging
   blockinfile:
     dest: /etc/filebeat/filebeat.yml
@@ -41,11 +40,11 @@
           - /var/lib/docker/containers/*/*.log
   when: mode == "docker"
 
-- name: enable filebeat
+- name: FILEBEAT - enable filebeat
   systemd:
     name: filebeat
     enabled: yes
     state: started
 
-- name: setup filebeat
+- name: FILEBEAT - setup filebeat
   shell: 'filebeat setup'

@@ -1,12 +1,12 @@
 ---
 # tasks file for elasticsearch
-- name: Set max virtual memory areas for Elasticsearch
+- name: ELASTICSEARCH - set max virtual memory areas for Elasticsearch
   ansible.posix.sysctl:
     name: vm.max_map_count
     value: '262144'
     state: present
 
-- name: Create a directory if it does not exist
+- name: ELASTICSEARCH - Create workdir
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
@@ -19,19 +19,19 @@
     - { path: "{{ ansible_workdir }}/elastic/data-02" }
     - { path: "{{ ansible_workdir }}/elastic/data-03" }
 
-- name: Copy docker-compose yaml to target
+- name: ELASTICSEARCH - Copy docker-compose yaml to target
   ansible.builtin.template:
     src: "docker-compose.yml.j2"
     dest: "{{ ansible_workdir }}/elastic-conf/docker-compose.yml"
     mode: '0644'
 
-- name: Run `docker-compose up`
+- name: ELASTICSEARCH - Run `docker-compose up`
   community.docker.docker_compose:
     project_src: "{{ ansible_workdir }}/elastic-conf/"
     pull: true
     state: present
   register: compose
 
-- name: Output of compose Elasticsearch
+- name: ELASTICSEARCH - Output of docker compose
   ansible.builtin.debug:
     var: compose

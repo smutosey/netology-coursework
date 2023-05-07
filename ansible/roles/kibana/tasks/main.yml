@@ -1,6 +1,6 @@
 ---
 # tasks file for kibana
-- name: Create a directory if it does not exist
+- name: KIBANA - Create a directory if it does not exist
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
@@ -10,19 +10,19 @@
   loop:
     - { path: "{{ ansible_workdir }}/kibana" }
 
-- name: Copy docker-compose yaml to target
+- name: KIBANA - Copy docker-compose yaml to target
   ansible.builtin.copy:
     src: "docker-compose.yml"
     dest: "{{ ansible_workdir }}/kibana/docker-compose.yml"
     mode: '0644'
 
-- name: Run `docker-compose up`
+- name: KIBANA - Run `docker-compose up`
   community.docker.docker_compose:
     project_src: "{{ ansible_workdir }}/kibana/"
     pull: true
     state: present
   register: compose
 
-- name: Output of compose Kibana service
+- name: KIBANA - Output of compose Kibana service
   ansible.builtin.debug:
     var: compose

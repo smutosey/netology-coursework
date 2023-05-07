@@ -1,6 +1,6 @@
 ---
 # tasks file for prometheus
-- name: Create a directory if it does not exist
+- name: PROMETHEUS - Create a directory if it does not exist
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
@@ -8,17 +8,17 @@
   loop:
     - { path: "{{ ansible_workdir }}/prometheus" }
 
-- name: Replace prometheus config
+- name: PROMETHEUS - Replace prometheus config
   ansible.builtin.template:
     src: prometheus.yml.j2
     dest: "{{ ansible_workdir }}/prometheus/prometheus.yml"
 
-- name: Copy record rules
+- name: PROMETHEUS - Copy record rules
   ansible.builtin.copy:
     src: node-rules.yml
     dest: "{{ ansible_workdir }}/prometheus/node-rules.yml"
 
-- name: Prometheus container start
+- name: PROMETHEUS - container start
   community.docker.docker_container:
     name: prometheus
     image: prom/prometheus:v2.43.0
@@ -26,3 +26,4 @@
       - "9090:9090"
     volumes:
       - "{{ ansible_workdir }}/prometheus:/etc/prometheus"
+    command: "--config.file=/etc/prometheus/prometheus.yml --log.level=debug"

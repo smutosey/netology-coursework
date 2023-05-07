@@ -22,10 +22,10 @@ output "internal_instances_ips" {
 output "external_instances_ip" {
   description = "Internal IP address of webservers."
   value       = {
-    "bastion(22)" = yandex_compute_instance.bastion.network_interface.0.nat_ip_address
-    "kibana(5601)" = yandex_compute_instance.kibana.network_interface.0.nat_ip_address
-    "grafana(3000)" = yandex_compute_instance.grafana.network_interface.0.nat_ip_address
-    "load_balancer(443)" = yandex_alb_load_balancer.cw-netology.listener.0.endpoint.0.address.0.external_ipv4_address.0.address
+    "bastion" = yandex_compute_instance.bastion.network_interface.0.nat_ip_address
+    "kibana" = "http://${yandex_compute_instance.kibana.network_interface.0.nat_ip_address}:5601"
+    "grafana" = "http://${yandex_compute_instance.grafana.network_interface.0.nat_ip_address}:3000"
+    "load_balancer" = "https://${yandex_alb_load_balancer.cw-netology.listener.0.endpoint.0.address.0.external_ipv4_address.0.address}"
   }
 }
 

@@ -1,5 +1,5 @@
 ---
-- name: Create a directory if it does not exist
+- name: PGADAPTER - create a directory if it does not exist
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
@@ -7,7 +7,7 @@
   loop:
     - { path: "{{ ansible_workdir }}/pgadapter" }
 
-- name: Make env file from template
+- name: PGADAPTER - Make env file from template
   ansible.builtin.template:
     src: pgadapter.env.j2
     dest: "{{ ansible_workdir }}/pgadapter/pgadapter.env"
@@ -15,7 +15,7 @@
     group: root
     mode: 0600
 
-- name: Move binary to /usr/local/bin
+- name: PGADAPTER - Move binary to /usr/local/bin
   ansible.builtin.copy:
     src: postgresql-prometheus-adapter
     dest: /usr/local/bin/postgresql-prometheus-adapter
@@ -23,7 +23,7 @@
     group: root
     mode: 0755
 
-- name: Copy unit file to systemd
+- name: PGADAPTER - Copy unit file to systemd
   ansible.builtin.template:
     src: pgadapter.service.j2
     dest: /etc/systemd/system/pgadapter.service
@@ -31,7 +31,7 @@
     group: root
     mode: 0600
 
-- name: Start unit
+- name: PGADAPTER - Start unit
   ansible.builtin.systemd:
     name: pgadapter.service
     state: started

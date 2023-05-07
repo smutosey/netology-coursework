@@ -3,7 +3,7 @@ Description=PG Prometheus Adapter
 
 [Service]
 EnvironmentFile={{ ansible_workdir }}/pgadapter/pgadapter.env
-ExecStart=/usr/local/bin/postgresql-prometheus-adapter
+ExecStart=/usr/local/bin/postgresql-prometheus-adapter --pg-threads=15 --log.level=debug
 Restart=on-failure
 
 [Install]

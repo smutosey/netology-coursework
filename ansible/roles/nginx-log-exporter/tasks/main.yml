@@ -1,13 +1,13 @@
 ---
 # tasks file for nginx-log-exporter
 
-- name: Download and unarchive nginx log exporter
+- name: NLE - Download and unarchive nginx log exporter
   ansible.builtin.unarchive:
     remote_src: yes
     src: https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.10.0/prometheus-nginxlog-exporter_1.10.0_linux_amd64.tar.gz
     dest: /tmp
 
-- name: Move binary to /usr/bin
+- name: NLE - Move binary to /usr/bin
   ansible.builtin.copy:
     remote_src: yes
     src: /tmp/prometheus-nginxlog-exporter
@@ -16,7 +16,7 @@
     group: root
     mode: 0755
 
-- name: Create dir prometheus-nginxlog-exporter
+- name: NLE - Create dir prometheus-nginxlog-exporter
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
@@ -26,12 +26,12 @@
   loop:
     - { path: "{{ ansible_workdir }}/prometheus-nginxlog-exporter" }
 
-- name: Make exporter config from template
+- name: NLE - Make exporter config from template
   ansible.builtin.template:
     src: config.hcl.j2
     dest: "{{ ansible_workdir }}/prometheus-nginxlog-exporter/config.hcl"
 
-- name: install unit file to systemd
+- name: NLE - install unit file to systemd
   ansible.builtin.template:
     src: nginx-log-exporter.service.j2
     dest: /etc/systemd/system/nginx-log-exporter.service
@@ -39,7 +39,19 @@
     group: root
     mode: 0600
 
-- name: Start unit
+- name: NLE - Allow connections to exporter
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 4040
+    jump: ACCEPT
+    action: insert
+    rule_num: 1
+    match: tcp
+    comment: Accept new NGINX LOG EXPORTER connections.
+
+
+- name: NLE - Start unit
   ansible.builtin.systemd:
     name: nginx-log-exporter.service
     state: started
