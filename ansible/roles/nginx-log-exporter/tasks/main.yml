@@ -20,8 +20,8 @@
   ansible.builtin.file:
     path: '{{ item.path }}'
     state: directory
-    owner: 1000
-    group: docker
+    owner: ansible
+    group: root
     mode: '0755'
   loop:
     - { path: "{{ ansible_workdir }}/prometheus-nginxlog-exporter" }

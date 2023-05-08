@@ -6,6 +6,8 @@ groups:
     expr: node_memory_MemAvailable_bytes{job="nodes"} / node_memory_MemTotal_bytes{job="nodes"} * 100 < 10
     for: 2m
     labels:
+      cluster: netology
+      service: nodes
       severity: critical
     annotations:
       summary: Host out of memory (instance {{ $labels.instance }})"
@@ -15,6 +17,8 @@ groups:
     expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{job="nodes",mode="idle"}[5m])) * 100) > 10
     for: 5m
     labels:
+      cluster: netology
+      service: nodes
       severity: warning
     annotations:
       summary: "Host high CPU load (instance {{ $labels.instance }})"
@@ -24,25 +28,31 @@ groups:
     expr: node_filesystem_free_bytes{mountpoint="/", fstype="rootfs",job="nodes"} / node_filesystem_size_bytes{job="nodes"} * 100 < 10
     for: 1m
     labels:
+      cluster: netology
+      service: nodes
       severity: critical
     annotations:
       summary: "Host out of disk space (instance {{ $labels.instance }})"
       description: "Disk is almost full (< 10% left)\n {{ $labels.instance_short }}\n {{ $labels.mountpoint }}\n VALUE = {{ printf \"node_filesystem_avail_bytes{mountpoint=’%s’}\" .Labels.mountpoint | query | first | value | humanize1024 }}"
 
   - alert: NginxErrorsHTTPParse
-    expr: nginx_parse_errors_total{job="webservers-nginx"}
+    expr: nginx_parse_errors_total{job="webservers-nginx"} > 10
     for: 1m
     labels:
+      cluster: netology
+      service: nginx
       severity: warning
     annotations:
       summary: "Nginx cant parse requests (instance {{ $labels.instance }})"
       description: "Count of parse errors:\n VALUE = {{ $value }}\n LABELS: {{ $labels }}"
 
   - alert: NginxDown
-    expr: up{job="webservers-nginx"}
+    expr: up{job="webservers-nginx"} == 0
     for: 1m
     labels:
+      cluster: netology
+      service: nginx
       severity: critical
     annotations:
-      summary: "NGINX is down (instance {{ $labels.instance }})"
-      description: "NGINX server status:\n VALUE = {{ $value }}\n LABELS: {{ $labels }}"
+      summary: "NGINX server is down (instance {{ $labels.instance }})"
+      description: "NGINX  status: down\n VALUE = {{ $value }}\n LABELS: {{ $labels }}"

@@ -13,6 +13,17 @@ resource "yandex_mdb_postgresql_cluster" "postgres" {
       disk_type_id       = "network-ssd"
       disk_size          = 30
     }
+    postgresql_config = {
+      max_connections                   = 400
+      max_locks_per_transaction         = 200
+      max_parallel_workers              = 10
+      max_prepared_transactions         = 4
+      enable_parallel_hash              = true
+      autovacuum_vacuum_scale_factor    = 0.34
+      default_transaction_isolation     = "TRANSACTION_ISOLATION_READ_COMMITTED"
+      shared_preload_libraries          = "SHARED_PRELOAD_LIBRARIES_AUTO_EXPLAIN,SHARED_PRELOAD_LIBRARIES_PG_HINT_PLAN"
+    }
+
   }
 
   maintenance_window {
@@ -50,7 +61,7 @@ resource "yandex_mdb_postgresql_user" "prom" {
   cluster_id = yandex_mdb_postgresql_cluster.postgres.id
   name       = "prom"
   password   = var.pg_admin_password
-  conn_limit = 50
+  conn_limit = 150
   settings = {
     default_transaction_isolation = "read committed"
     log_min_duration_statement    = 5000

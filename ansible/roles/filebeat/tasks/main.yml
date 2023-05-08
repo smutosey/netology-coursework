@@ -45,6 +45,13 @@
     name: filebeat
     enabled: yes
     state: started
+    daemon_reload: true
+
+- name: FILEBEAT - enable filebeat
+  systemd:
+    name: filebeat
+    enabled: yes
+    state: restarted
 
 - name: FILEBEAT - setup filebeat
   shell: 'filebeat setup'

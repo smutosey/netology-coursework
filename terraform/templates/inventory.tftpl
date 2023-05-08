@@ -6,8 +6,8 @@ all:
         ${bastion.hostname}:
           ansible_host: ${bastion.ip}
       vars:
-        ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o "UserKnownHostsFile=/dev/null"'
-        ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+        ansible_host_key_checking: false
 
     webservers:
       hosts:
@@ -27,7 +27,7 @@ all:
         ${kibana.hostname}:
           ansible_host: ${kibana.ip}
   vars:
-    ansible_ssh_common_args: '-J ansible@${bastion.ip} -o StrictHostKeyChecking=no -o "UserKnownHostsFile=/dev/null"'
-    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+    ansible_ssh_common_args: '-J ansible@${bastion.ip} -o StrictHostKeyChecking=no'
+    ansible_host_key_checking: false
     ansible_user: ansible
     ansible_become: true
