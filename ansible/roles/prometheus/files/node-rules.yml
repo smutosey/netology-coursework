@@ -1,58 +1,48 @@
-"groups":
-- "name": "node-exporter.rules"
-  "rules":
-  - "expr": |
-      count without (cpu) (
-        count without (mode) (
-          node_cpu_seconds_total{job="node"}
-        )
-      )
-    "record": "instance:node_num_cpu:sum"
-  - "expr": |
-      1 - avg without (cpu, mode) (
-        rate(node_cpu_seconds_total{job="node", mode="idle"}[1m])
-      )
-    "record": "instance:node_cpu_utilisation:rate1m"
-  - "expr": |
-      (
-        node_load1{job="node"}
-      /
-        instance:node_num_cpu:sum{job="node"}
-      )
-    "record": "instance:node_load1_per_cpu:ratio"
-  - "expr": |
-      1 - (
-        node_memory_MemAvailable_bytes{job="node"}
-      /
-        node_memory_MemTotal_bytes{job="node"}
-      )
-    "record": "instance:node_memory_utilisation:ratio"
-  - "expr": |
-      rate(node_vmstat_pgmajfault{job="node"}[1m])
-    "record": "instance:node_vmstat_pgmajfault:rate1m"
-  - "expr": |
-      rate(node_disk_io_time_seconds_total{job="node", device!=""}[1m])
-    "record": "instance_device:node_disk_io_time_seconds:rate1m"
-  - "expr": |
-      rate(node_disk_io_time_weighted_seconds_total{job="node", device!=""}[1m])
-    "record": "instance_device:node_disk_io_time_weighted_seconds:rate1m"
-  - "expr": |
-      sum without (device) (
-        rate(node_network_receive_bytes_total{job="node", device!="lo"}[1m])
-      )
-    "record": "instance:node_network_receive_bytes_excluding_lo:rate1m"
-  - "expr": |
-      sum without (device) (
-        rate(node_network_transmit_bytes_total{job="node", device!="lo"}[1m])
-      )
-    "record": "instance:node_network_transmit_bytes_excluding_lo:rate1m"
-  - "expr": |
-      sum without (device) (
-        rate(node_network_receive_drop_total{job="node", device!="lo"}[1m])
-      )
-    "record": "instance:node_network_receive_drop_excluding_lo:rate1m"
-  - "expr": |
-      sum without (device) (
-        rate(node_network_transmit_drop_total{job="node", device!="lo"}[1m])
-      )
-    "record": "instance:node_network_transmit_drop_excluding_lo:rate1m"
+groups:
+- name: "netology.rules"
+  rules:
+
+  - alert: OutOfMemory
+    expr: node_memory_MemAvailable_bytes{job="nodes"} / node_memory_MemTotal_bytes{job="nodes"} * 100 < 10
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: Host out of memory (instance {{ $labels.instance }})"
+      description: "Node memory is filling up (< 10% left)\n VALUE = {{ $value }}\n LABELS: {{ $labels }}"
+
+  - alert: CriticalCPULoad
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{job="nodes",mode="idle"}[5m])) * 100) > 10
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Host high CPU load (instance {{ $labels.instance }})"
+      description: "The CPU load reported from {{ $labels.instance }} has exceeded 80% for more than 2 minutes."
+
+  - alert: HostOutOfDiskSpace
+    expr: node_filesystem_free_bytes{mountpoint="/", fstype="rootfs",job="nodes"} / node_filesystem_size_bytes{job="nodes"} * 100 < 10
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Host out of disk space (instance {{ $labels.instance }})"
+      description: "Disk is almost full (< 10% left)\n {{ $labels.instance_short }}\n {{ $labels.mountpoint }}\n VALUE = {{ printf \"node_filesystem_avail_bytes{mountpoint=’%s’}\" .Labels.mountpoint | query | first | value | humanize1024 }}"
+
+  - alert: NginxErrorsHTTPParse
+    expr: nginx_parse_errors_total{job="webservers-nginx"}
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Nginx cant parse requests (instance {{ $labels.instance }})"
+      description: "Count of parse errors:\n VALUE = {{ $value }}\n LABELS: {{ $labels }}"
+
+  - alert: NginxDown
+    expr: up{job="webservers-nginx"}
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "NGINX is down (instance {{ $labels.instance }})"
+      description: "NGINX server status:\n VALUE = {{ $value }}\n LABELS: {{ $labels }}"

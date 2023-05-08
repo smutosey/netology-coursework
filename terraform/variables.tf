@@ -36,3 +36,11 @@ variable "kibana_password" {
 variable "tls_cert_id" {
   description = "TLS cert id for load balancer"
 }
+
+variable "telegram_bot_token" {
+  description = "Alertmanager Bot Token"
+}
+
+variable "telegram_chat_id" {
+  description = "Telegram chat id for Alertmanager alerts"
+}

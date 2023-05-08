@@ -88,4 +88,8 @@ resource "yandex_alb_load_balancer" "cw-netology" {
         }
     }
   }
+  depends_on = [
+    yandex_vpc_security_group_rule.lb-access,
+    yandex_vpc_security_group_rule.lb-healthchecks
+  ]
 }

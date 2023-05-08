@@ -213,7 +213,7 @@ resource "yandex_compute_instance_group" "web-netology" {
     }
 
     metadata = {
-      user-data = file("meta/webserver.yaml")
+      user-data = file("meta/default.yaml")
     }
   }
 

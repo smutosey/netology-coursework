@@ -9,8 +9,8 @@
     - { path: "{{ ansible_workdir }}/alertmanager" }
 
 - name: ALERTMANAGER - Replace config
-  ansible.builtin.copy:
-    src: alertmanager.yml
+  ansible.builtin.template:
+    src: alertmanager.yml.j2
     dest: "{{ ansible_workdir }}/alertmanager/alertmanager.yml"
 
 - name: ALERTMANAGER - start container
@@ -18,7 +18,7 @@
     name: alertmanager
     image: prom/alertmanager
     ports:
-      - "127.0.0.1:9093:9093"
+      - "9093:9093"
     volumes:
       - "{{ ansible_workdir }}/alertmanager:/config"
-    command: --config.file=/config/alertmanager.yml
+    command: "--config.file=/config/alertmanager.yml --log.level=debug"

@@ -1,0 +1,37 @@
+- name: SITE - Make home dir
+  ansible.builtin.file:
+    path: /var/www/site
+    state: directory
+    owner: ansible
+    group: root
+    mode: '0755'
+
+- name: SITE - Copy assets
+  ansible.builtin.copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '0644'
+  loop:
+    - { src: assets, dest: /var/www/site/assets}
+    - { src: images, dest: /var/www/site/images}
+
+- name: SITE - Copy server config
+  ansible.builtin.copy:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '0644'
+  loop:
+    - { src: server.conf, dest: /etc/nginx/sites-available/default}
+
+- name: SITE - Make html
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    mode: '0644'
+  loop:
+    - { src: index.html.j2, dest: /var/www/site/index.html}
+
+- name: SITE - Restart service NGINX
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

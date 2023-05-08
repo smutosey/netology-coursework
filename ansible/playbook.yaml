@@ -1,7 +1,19 @@
+- name: Test connection to hosts
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: PING - Test connection
+      ansible.builtin.ping:
+
+- name: Setup html template on webservers
+  hosts:
+    - webservers
+  roles:
+    - site
+
 - name: Setup docker engine and python plugins for docker compose
   hosts:
     - observability
-    - webservers
   roles:
     - docker-host
 
@@ -24,6 +36,7 @@
   hosts:
     - webservers
     - observability
+  serial: 7
   roles:
     - node-exporter
 

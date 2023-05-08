@@ -1,7 +1,9 @@
 global:
   # The smarthost and SMTP sender used for mail notifications.
-  smtp_smarthost: 'localhost:25'
-  smtp_from: 'alertmanager@example.org'
+  smtp_smarthost: 'prometheus:25'
+  smtp_from: 'alertmanager@nedorezov.org'
+  smtp_require_tls: false
+
 
 # The root route on which each incoming alert enters.
 route:
@@ -42,6 +44,10 @@ inhibit_rules:
 
 
 receivers:
-- name: 'nedorezov'
-  email_configs:
-  - to: 'alserned@gmail.com'
+
+- name: 'nedorezov-telegram'
+  telegram_configs:
+  - bot_token: {{ telegram_bot_token }}
+    api_url: https://api.telegram.org
+    chat_id: {{ telegram_chat_id }}
+    parse_mode: ''
