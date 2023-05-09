@@ -1,1 +1,0 @@
-# ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -J ansible@158.160.22.219 ansible@prometheus
