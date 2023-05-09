@@ -14,7 +14,7 @@ resource "yandex_compute_snapshot_schedule" "default" {
   schedule_policy {
     expression = "0 0 * * *"
   }
-  retention_period = "168h"
+  retention_period = "168h0m0s"
 
   snapshot_spec {
       description = "coursework-snapshots"
